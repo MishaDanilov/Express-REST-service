@@ -1,8 +1,9 @@
 const uuid = require('uuid');
 
 class User {
+  static instances = []
   constructor({
-    id = uuid(),
+    id = uuid.v4(),
     name = 'USER',
     login = 'user',
     password = 'P@55w0rd'
@@ -11,8 +12,10 @@ class User {
     this.name = name;
     this.login = login;
     this.password = password;
+    User.instances.push(this)
   }
 
+  
   static toResponse(user) {
     const { id, name, login } = user;
     return { id, name, login };

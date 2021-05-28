@@ -1,23 +1,8 @@
-/**
- * Task repository
- * @module task/repository
- */
 const Task = require('./task.model');
 const Board = require('../boards/board.model');
 
-/**
- * Returns all Tasks by idBoard.
- * @param {string} idBoard board id
- * @returns {Promise<Array<Task>>} a promise returns array of tasks.
- */
 const getAllTaskByBOARDID = async (idBoard) => Task.instances.filter(task=>task.boardId === idBoard);
 
-/**
- * Creat task.
- * @param {Object} task task object
- * @param {string} idBoard board id
- * @returns {Promise<Task>} a promise returns instance of Task.
- */
 const CreatTask = async (idBoard,task) => {
   const boardExist = Board.instances.find(elem=>elem.id === idBoard);
   if(boardExist) {
@@ -29,21 +14,8 @@ const CreatTask = async (idBoard,task) => {
   
 }
 
-/**
- * Returns Task by idBoard and TaskBy.
- * @param {string} idBoard board id
- * @param {string} idTask task id
- * @returns {Promise<Task>} a promise returns instance of task.
- */
 const getTaskByIDandBoardID = async (idTask,idBoard) => Task.instances.find(task=>(task.id === idTask&&task.boardId === idBoard))
 
-/**
- * Update a task by idTask and idBoard and object of task.
- * @param {string} idBoard board id
- * @param {string} idTask task id
- * @param {Object} task task object
- * @returns {Promise<Object|boolean>} Task object with id or false if task does not exist.
- */
 const UpdateTask = async (idTask,idBoard,task) => {
   const TaskExist = Task.instances.find(elem=>(elem.id === idTask&&elem.boardId === idBoard))
   if(TaskExist) {
@@ -55,12 +27,6 @@ const UpdateTask = async (idTask,idBoard,task) => {
   return false
 }
 
-/**
- * Delete a task by idTask and idBoard.
- * @param {string} idBoard board id
- * @param {string} idTask task id
- * @returns {Promise<Object|boolean>} object with message or false if task does not exist.
- */
 const DeleteTask = async (idTask,idBoard) => {
   if(idTask==='all') {
     const taskAll = Task.instances.filter(task=>task.boardId === idBoard)
@@ -81,11 +47,6 @@ const DeleteTask = async (idTask,idBoard) => {
 
 }
 
-/**
- * Set UserId as Null in instance of Task.
- * @param {string} idUser user id
- * @returns {Promise} return void promise
- */
 const setUserIdNull = async (idUser)=>{
   const taskNull = Task.instances.filter(task=>task.userId === idUser)
   taskNull.forEach(elem=>{

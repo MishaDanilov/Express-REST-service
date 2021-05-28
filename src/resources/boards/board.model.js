@@ -1,18 +1,8 @@
 const uuid = require('uuid');
 
-/**
- * Board class
- */
 class Board {
   static instances = []
 
-  /**
-   * Board constructor
-   * @type {Board}
-   * @param {string} id - instance id.
-   * @param {string} title - board title.
-   * @param {Array} columns - board column.
-   */
   constructor({
     id = uuid.v4(),
     title = 'TITLE',

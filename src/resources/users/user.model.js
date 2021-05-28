@@ -1,19 +1,8 @@
 const uuid = require('uuid');
 
-/**
- * User class
- */
 class User {
   static instances = []
 
-  /**
-   * User constructor.
-   * @type {User}
-   * @param {string} id - user id.
-   * @param {string} name - user name.
-   * @param {string} login - user login.
-   * @param {string} password - user password.
-   */
   constructor({
     id = uuid.v4(),
     name = 'USER',
@@ -27,12 +16,6 @@ class User {
     User.instances.push(this)
   }
 
-  /**
-   * Returns object without password
-   * @param {User} user user instance
-   * @returns {Object} object without password
-   * @static
-   */
   static toResponse(user) {
     const {
       id,

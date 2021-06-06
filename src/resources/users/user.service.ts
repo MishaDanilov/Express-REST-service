@@ -6,12 +6,15 @@ const getAll = (): Promise<IUser[]> => usersRepo.getAll();
 
 const CreatUser = (user: IUserParams): Promise<User> => usersRepo.CreatUser(user);
 
-const getUserByID = (id: string): Promise<IUser | undefined> => usersRepo.getUserByID(id);
+const getUserByID = (id: string | undefined): Promise<IUser | undefined> =>
+  usersRepo.getUserByID(id);
 
-const UpdateUser = (id: string, user: IUserResponse): Promise<boolean | IUserResponse> =>
-  usersRepo.UpdateUser(id, user);
+const UpdateUser = (
+  id: string | undefined,
+  user: IUserResponse,
+): Promise<boolean | IUserResponse> => usersRepo.UpdateUser(id, user);
 
-const DeleteUser = (id: string): Promise<boolean | { message: string }> => {
+const DeleteUser = (id: string | undefined): Promise<boolean | { message: string }> => {
   tasksRepo.setUserIdNull(id);
   return usersRepo.DeleteUser(id);
 };

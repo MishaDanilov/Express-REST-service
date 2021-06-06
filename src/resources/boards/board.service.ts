@@ -6,12 +6,15 @@ const getAll = (): Promise<Array<IBoard>> => boardsRepo.getAll();
 
 const CreatBoard = (board: IBoardParams): Promise<IBoard> => boardsRepo.CreatBoard(board);
 
-const getBoardByID = (id: string): Promise<IBoard | undefined> => boardsRepo.getBoardByID(id);
+const getBoardByID = (id: string | undefined): Promise<IBoard | undefined> =>
+  boardsRepo.getBoardByID(id);
 
-const UpdateBoard = (id: string, board: IBoardResponse): Promise<boolean | IBoardResponse> =>
-  boardsRepo.UpdateBoard(id, board);
+const UpdateBoard = (
+  id: string | undefined,
+  board: IBoardResponse,
+): Promise<boolean | IBoardResponse> => boardsRepo.UpdateBoard(id, board);
 
-const DeleteBoard = (id: string): Promise<boolean | { message: string }> => {
+const DeleteBoard = (id: string | undefined): Promise<boolean | { message: string }> => {
   tasksRepo.DeleteTask('all', id);
   return boardsRepo.DeleteBoard(id);
 };

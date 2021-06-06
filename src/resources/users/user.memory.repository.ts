@@ -4,9 +4,12 @@ const getAll = async (): Promise<Array<IUser>> => User.instances;
 
 const CreatUser = async (user: IUserParams): Promise<User> => new User(user);
 
-const getUserByID = async (id: string) => User.instances.find(user => user.id === id);
+const getUserByID = async (id: string | undefined) => User.instances.find(user => user.id === id);
 
-const UpdateUser = async (id: string, user: IUserResponse): Promise<IUserResponse | boolean> => {
+const UpdateUser = async (
+  id: string | undefined,
+  user: IUserResponse,
+): Promise<IUserResponse | boolean> => {
   const userExist: IUser | undefined = User.instances.find((elem: IUser) => elem.id === id);
   if (userExist) {
     const index: number = User.instances.indexOf(userExist);
@@ -17,7 +20,7 @@ const UpdateUser = async (id: string, user: IUserResponse): Promise<IUserRespons
   return false;
 };
 
-const DeleteUser = async (id: string): Promise<{ message: string } | boolean> => {
+const DeleteUser = async (id: string | undefined): Promise<{ message: string } | boolean> => {
   const userExist: IUser | undefined = User.instances.find((elem: IUser) => elem.id === id);
   if (userExist) {
     const index: number = User.instances.indexOf(userExist);

@@ -1,10 +1,13 @@
 import { Task, ITask, ITaskParams, ITaskResponse } from './task.model';
 import { Board, IBoard } from '../boards/board.model';
 
-const getAllTaskByBOARDID = async (idBoard: string): Promise<Array<ITask>> =>
+const getAllTaskByBOARDID = async (idBoard: string | undefined): Promise<Array<ITask>> =>
   Task.instances.filter(task => task.boardId === idBoard);
 
-const CreatTask = async (idBoard: string, task: ITaskParams): Promise<ITask | boolean> => {
+const CreatTask = async (
+  idBoard: string | undefined,
+  task: ITaskParams,
+): Promise<ITask | boolean> => {
   const boardExist: IBoard | undefined = Board.instances.find(elem => elem.id === idBoard);
   if (boardExist) {
     Object.assign(task, { boardId: idBoard });
@@ -13,12 +16,15 @@ const CreatTask = async (idBoard: string, task: ITaskParams): Promise<ITask | bo
   return false;
 };
 
-const getTaskByIDandBoardID = async (idTask: string, idBoard: string): Promise<ITask | undefined> =>
+const getTaskByIDandBoardID = async (
+  idTask: string | undefined,
+  idBoard: string | undefined,
+): Promise<ITask | undefined> =>
   Task.instances.find(task => task.id === idTask && task.boardId === idBoard);
 
 const UpdateTask = async (
-  idTask: string,
-  idBoard: string,
+  idTask: string | undefined,
+  idBoard: string | undefined,
   task: ITaskResponse,
 ): Promise<ITaskResponse | boolean> => {
   const TaskExist: ITask | undefined = Task.instances.find(
@@ -34,8 +40,8 @@ const UpdateTask = async (
 };
 
 const DeleteTask = async (
-  idTask: string,
-  idBoard: string,
+  idTask: string | undefined,
+  idBoard: string | undefined,
 ): Promise<{ message: string } | boolean> => {
   if (idTask === 'all') {
     const taskAll: Array<ITask> = Task.instances.filter(task => task.boardId === idBoard);
@@ -57,7 +63,7 @@ const DeleteTask = async (
   return false;
 };
 
-const setUserIdNull = async (idUser: string): Promise<void> => {
+const setUserIdNull = async (idUser: string | undefined): Promise<void> => {
   const taskNull: Array<ITask> = Task.instances.filter(task => task.userId === idUser);
   taskNull.forEach(elem => {
     const index: number = Task.instances.indexOf(elem);

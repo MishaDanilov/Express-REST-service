@@ -17,10 +17,22 @@ git clone {repository URL}
 npm install
 ```
 
-## Running application
+## Building Docker
 
 ```
-npm start
+docker compose build
+```
+
+## Starting Docker containers
+
+```
+docker compose up
+```
+
+## Docker Hub
+
+```
+follow this link: https://hub.docker.com/u/andropoulos
 ```
 
 After starting the app on port (4000 as default) you can open

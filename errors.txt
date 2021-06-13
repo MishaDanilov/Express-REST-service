@@ -1,0 +1,4 @@
+{"name":"Error","message":"Oops!"}
+{"name":"Error","reason":{},"message":"Oops!"}
+{"status":500,"name":"Error","reason":{},"message":"Oops!"}
+{"status":500,"name":"Error","message":"Oops!"}

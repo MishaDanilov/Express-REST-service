@@ -1,10 +1,11 @@
-import * as uuid from 'uuid';
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../../database/db';
 
 interface ITask {
   id: string;
   title: string;
   order: number;
-  description: string;
+  description: string | null;
   userId: string | null;
   columnId: string | null;
   boardId: string | null;
@@ -13,7 +14,7 @@ interface ITask {
 interface ITaskParams {
   title: string;
   order: number;
-  description: string;
+  description: string | null;
   userId: string | null;
   columnId: string | null;
   boardId: string | null;
@@ -23,40 +24,58 @@ interface ITaskResponse extends ITaskParams {
   id: string;
 }
 
-class Task implements ITask {
-  static instances: Array<ITask> = [];
+class Task extends Model {
+  public id!: string;
 
-  id: string;
+  public title!: string;
 
-  title: string;
+  public order!: number;
 
-  order: number;
+  public description!: string | null;
 
-  description: string;
+  public userId!: string | null;
 
-  userId: string | null;
+  public boardId!: string | null;
 
-  columnId: string | null;
-
-  boardId: string | null;
-
-  constructor({
-    title = 'title',
-    order = 0,
-    description = 'Lorem ipsum',
-    userId = null,
-    columnId = null,
-    boardId = null,
-  }: ITaskParams) {
-    this.id = uuid.v4();
-    this.title = title;
-    this.order = order;
-    this.description = description;
-    this.userId = userId;
-    this.boardId = boardId;
-    this.columnId = columnId;
-    Task.instances.push(this);
-  }
+  public columnId!: string | null;
 }
+
+Task.init(
+  {
+    id: {
+      type: new DataTypes.STRING(128),
+      primaryKey: true,
+      allowNull: true,
+    },
+    title: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+    order: {
+      type: new DataTypes.INTEGER(),
+      allowNull: true,
+    },
+    description: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+    userId: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+    boardId: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+    columnId: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+  },
+  {
+    tableName: 'tasks',
+    sequelize,
+  },
+);
 
 export { Task, ITask, ITaskParams, ITaskResponse };

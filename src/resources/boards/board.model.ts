@@ -1,43 +1,79 @@
-import * as uuid from 'uuid';
+import {
+  DataTypes,
+  Model,
+  HasManyGetAssociationsMixin,
+  HasManyAddAssociationMixin,
+  HasManyHasAssociationMixin,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+} from 'sequelize';
+import { sequelize } from '../../database/db';
+import { Column } from '../columns/column.model';
+import { Task } from '../tasks/task.model';
 
 interface IBoard {
   id: string;
   title: string;
-  columns: Array<{ id: string; title: string; order: number }>;
 }
 
 interface IBoardParams {
   title: string;
-  columns: Array<{ id: string; title: string; order: number }>;
+  columns: Array<{ title: string; order: number }>;
 }
 
 interface IBoardResponse extends IBoardParams {
   id: string;
 }
 
-class Board implements IBoard {
-  static instances: Array<IBoard> = [];
-
-  id: string;
-
+interface IBoardParamsForUpdate {
   title: string;
-
   columns: Array<{ id: string; title: string; order: number }>;
-
-  constructor({
-    title = 'TITLE',
-    columns = [{ id: uuid.v4(), title: 'Backlog', order: 1 }],
-  }: IBoardParams) {
-    this.id = uuid.v4();
-    this.title = title;
-    this.columns = columns;
-    this.columns.map(elem =>
-      Object.assign(elem, {
-        id: uuid.v4(),
-      }),
-    );
-    Board.instances.push(this);
-  }
 }
 
-export { Board, IBoard, IBoardParams, IBoardResponse };
+class Board extends Model {
+  public id!: string;
+
+  public title!: string;
+
+  public columns!: Column[];
+
+  public getColumns!: HasManyGetAssociationsMixin<Column>;
+
+  public addColumn!: HasManyAddAssociationMixin<Column, number>;
+
+  public hasColumn!: HasManyHasAssociationMixin<Column, number>;
+
+  public countColumns!: HasManyCountAssociationsMixin;
+
+  public createColumn!: HasManyCreateAssociationMixin<Column>;
+
+  public getTasks!: HasManyGetAssociationsMixin<Task>;
+
+  public addTask!: HasManyAddAssociationMixin<Task, number>;
+
+  public hasTask!: HasManyHasAssociationMixin<Task, number>;
+
+  public countTasks!: HasManyCountAssociationsMixin;
+
+  public createTask!: HasManyCreateAssociationMixin<Task>;
+}
+
+Board.init(
+  {
+    id: {
+      type: new DataTypes.STRING(128),
+      primaryKey: true,
+      allowNull: true,
+    },
+    title: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+  },
+  {
+    tableName: 'boards',
+    sequelize,
+  },
+);
+
+export { Board, IBoard, IBoardParams, IBoardResponse, IBoardParamsForUpdate };

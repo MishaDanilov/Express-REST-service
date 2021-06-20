@@ -1,11 +1,5 @@
-import * as uuid from 'uuid';
-
-interface IUser {
-  id: string;
-  name: string;
-  login: string;
-  password: string;
-}
+import { DataTypes, Model } from 'sequelize';
+import { sequelize } from '../../database/db';
 
 interface IUserParams {
   name: string;
@@ -17,29 +11,45 @@ interface IUserResponse extends IUserParams {
   id: string;
 }
 
-class User implements IUser {
-  static instances: Array<IUser> = [];
+class User extends Model {
+  public id!: string;
 
-  id: string;
+  public name!: string;
 
-  name: string;
+  public login!: string;
 
-  login: string;
+  public password!: string;
 
-  password: string;
-
-  constructor({ name = 'USER', login = 'user', password = 'P@55w0rd' }: IUserParams) {
-    this.id = uuid.v4();
-    this.name = name;
-    this.login = login;
-    this.password = password;
-    User.instances.push(this);
-  }
-
-  static toResponse(user: IUserResponse) {
+  static toResponse(user: IUserResponse): { id: string; name: string; login: string } {
     const { id, name, login } = user;
     return { id, name, login };
   }
 }
 
-export { User, IUserParams, IUserResponse, IUser };
+User.init(
+  {
+    id: {
+      type: new DataTypes.STRING(128),
+      primaryKey: true,
+      allowNull: true,
+    },
+    name: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+    login: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+    password: {
+      type: new DataTypes.STRING(128),
+      allowNull: true,
+    },
+  },
+  {
+    tableName: 'users',
+    sequelize,
+  },
+);
+
+export { User, IUserParams, IUserResponse };

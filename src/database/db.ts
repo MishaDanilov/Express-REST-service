@@ -6,9 +6,13 @@ const sequelize = new Sequelize(
   config.POSTGRES_USER as string,
   config.POSTGRES_PASSWORD,
   {
-    host: config.PSQL_HOST,
+    host: config.POSTGRES_HOST,
+    port: config.POSTGRES_PORT,
     dialect: 'postgres',
     logging: false,
+    define: {
+      timestamps: false,
+    },
   },
 );
 

@@ -16,8 +16,6 @@ interface Config {
   POSTGRES_DB: string | undefined;
   POSTGRES_USER: string | undefined;
   POSTGRES_PASSWORD: string | undefined;
-  PSQL_HOST: string | undefined;
-  POSTGRES_PORT1: number | undefined;
 }
 
 const config: Config = {
@@ -31,8 +29,6 @@ const config: Config = {
   POSTGRES_DB: process.env['POSTGRES_DB'],
   POSTGRES_USER: process.env['POSTGRES_USER'],
   POSTGRES_PASSWORD: process.env['POSTGRES_PASSWORD'],
-  PSQL_HOST: process.env['PSQL_HOST'],
-  POSTGRES_PORT1: process.env['POSTGRES_PORT1'] as number | undefined,
 };
 
 const {
@@ -46,8 +42,6 @@ const {
   POSTGRES_DB,
   POSTGRES_USER,
   POSTGRES_PASSWORD,
-  PSQL_HOST,
-  POSTGRES_PORT1,
 } = config;
 
 export {
@@ -61,6 +55,4 @@ export {
   POSTGRES_DB,
   POSTGRES_USER,
   POSTGRES_PASSWORD,
-  PSQL_HOST,
-  POSTGRES_PORT1,
 };

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { finished } from 'stream';
-import fs from 'fs';
-import path from 'path';
+import { loggingLog } from '../common/logger';
 
 const logging = (req: Request, res: Response, next: NextFunction) => {
   const { params } = req;
@@ -21,8 +20,7 @@ const logging = (req: Request, res: Response, next: NextFunction) => {
       body,
       ms,
     };
-    fs.appendFileSync(path.join(__dirname, '../../logs.txt'), JSON.stringify(data));
-    fs.appendFileSync(path.join(__dirname, '../../logs.txt'), '\n');
+    loggingLog<string>(JSON.stringify(data));
   });
 };
 export { logging };

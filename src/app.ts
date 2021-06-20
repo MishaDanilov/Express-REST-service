@@ -7,13 +7,17 @@ import { userRouter } from './resources/users/user.router';
 import { boardRouter } from './resources/boards/board.router';
 import { taskRouter } from './resources/tasks/task.router';
 import { logging } from './middlewares/logging';
+import { sequelize as db } from './db/db';
 import {
   errorHandling,
   uncaughtExceptionMiddlewares,
   unhandledRejectionMiddlewares,
 } from './middlewares/errorHandling';
 
+db.sync().catch(err => console.log('Error: ', err.message));
+
 const app = express();
+
 const swaggerDocument = YAML.load(path.join(__dirname, '../doc/api.yaml'));
 
 app.use(express.json());

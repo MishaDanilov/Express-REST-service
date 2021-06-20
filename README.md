@@ -17,10 +17,38 @@ git clone {repository URL}
 npm install
 ```
 
-## Running application
+## Edit .env file
 
 ```
-npm start
+NODE_ENV=development
+PORT=4000
+AUTH_MODE=false
+JWT_SECRET_KEY=secret-key
+
+PSQL_HOST: database
+POSTGRES_HOST=localhost
+POSTGRES_PORT=<your postgres port>
+POSTGRES_DB=<your postgres db>
+POSTGRES_USER=<your postgres user name>
+POSTGRES_PASSWORD=<your postgres password>
+```
+
+## Building Docker
+
+```
+docker compose build
+```
+
+## Starting Docker containers
+
+```
+docker compose up
+```
+
+## Docker Hub
+
+```
+follow this link: https://hub.docker.com/u/andropoulos
 ```
 
 After starting the app on port (4000 as default) you can open

@@ -1,21 +1,16 @@
 import * as usersRepo from './user.memory.repository';
-import * as tasksRepo from '../tasks/task.memory.repository';
-import { IUserParams, IUserResponse, IUser, User } from './user.model';
+import { IUserParams, IUserResponse, User } from './user.model';
 
-const getAll = (): Promise<IUser[]> => usersRepo.getAll();
+const getAll = (): Promise<IUserResponse[]> => usersRepo.getAll();
 
-const CreatUser = (user: IUserParams): Promise<User> => usersRepo.CreatUser(user);
+const CreatUser = (user: IUserParams): Promise<IUserResponse> => usersRepo.CreatUser(user);
 
-const getUserByID = (id: string | undefined): Promise<IUser | undefined> =>
-  usersRepo.getUserByID(id);
+const getUserByID = (id: string | undefined): Promise<User | null> => usersRepo.getUserByID(id);
 
-const UpdateUser = (
-  id: string | undefined,
-  user: IUserResponse,
-): Promise<boolean | IUserResponse> => usersRepo.UpdateUser(id, user);
+const UpdateUser = (id: string | undefined, user: IUserResponse): Promise<[number, User[]]> =>
+  usersRepo.UpdateUser(id, user);
 
-const DeleteUser = (id: string | undefined): Promise<boolean | { message: string }> => {
-  tasksRepo.setUserIdNull(id);
+const DeleteUser = (id: string | undefined): Promise<number> => {
   return usersRepo.DeleteUser(id);
 };
 

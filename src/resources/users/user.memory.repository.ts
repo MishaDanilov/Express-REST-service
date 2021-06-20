@@ -1,32 +1,43 @@
-import { User, IUserParams, IUserResponse, IUser } from './user.model';
+import { v4 } from 'uuid';
+import { User, IUserParams, IUserResponse } from './user.model';
 
-const getAll = async (): Promise<Array<IUser>> => User.instances;
+const getAll = async (): Promise<Array<User>> => {
+  const users = await User.findAll({ raw: true });
+  return users;
+};
 
-const CreatUser = async (user: IUserParams): Promise<User> => new User(user);
+const CreatUser = async (param: IUserParams): Promise<IUserResponse> => {
+  const createUser = { id: v4(), ...param };
+  const result = await User.create({
+    id: createUser.id,
+    name: createUser.name,
+    login: createUser.login,
+    password: createUser.password,
+  });
+  const user = {
+    id: result.id,
+    name: result.name,
+    login: result.login,
+    password: result.password,
+  };
+  return user;
+};
 
-const getUserByID = async (id: string | undefined) => User.instances.find(user => user.id === id);
+const getUserByID = async (id: string | undefined): Promise<User | null> => {
+  const user = await User.findByPk(id);
+  return user;
+};
 
 const UpdateUser = async (
   id: string | undefined,
   user: IUserResponse,
-): Promise<IUserResponse | boolean> => {
-  const userExist: IUser | undefined = User.instances.find((elem: IUser) => elem.id === id);
-  if (userExist) {
-    const index: number = User.instances.indexOf(userExist);
-    Object.assign(user, { id });
-    User.instances.splice(index, 1, user);
-    return user;
-  }
-  return false;
+): Promise<[number, User[]]> => {
+  const result = await User.update(user, { where: { id } });
+  return result;
 };
 
-const DeleteUser = async (id: string | undefined): Promise<{ message: string } | boolean> => {
-  const userExist: IUser | undefined = User.instances.find((elem: IUser) => elem.id === id);
-  if (userExist) {
-    const index: number = User.instances.indexOf(userExist);
-    User.instances.splice(index, 1);
-    return { message: 'The user has been deleted' };
-  }
-  return false;
+const DeleteUser = async (id: string | undefined): Promise<number> => {
+  const result = await User.destroy({ where: { id } });
+  return result;
 };
 export { getAll, CreatUser, getUserByID, UpdateUser, DeleteUser };

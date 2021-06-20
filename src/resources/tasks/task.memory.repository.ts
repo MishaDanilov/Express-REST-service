@@ -1,81 +1,53 @@
-import { Task, ITask, ITaskParams, ITaskResponse } from './task.model';
-import { Board, IBoard } from '../boards/board.model';
+import { v4 } from 'uuid';
+import { Task, ITaskResponse, ITaskParams } from './task.model';
+import { Board } from '../boards/board.model';
 
-const getAllTaskByBOARDID = async (idBoard: string | undefined): Promise<Array<ITask>> =>
-  Task.instances.filter(task => task.boardId === idBoard);
+const getAllTaskByBOARDID = async (
+  idBoard: string | undefined,
+): Promise<Array<ITaskResponse> | null> => {
+  const result = await Board.findByPk(idBoard);
+  if (result) {
+    const tasks = await result.getTasks();
+    return tasks;
+  }
+  return null;
+};
 
 const CreatTask = async (
   idBoard: string | undefined,
   task: ITaskParams,
-): Promise<ITask | boolean> => {
-  const boardExist: IBoard | undefined = Board.instances.find(elem => elem.id === idBoard);
-  if (boardExist) {
-    Object.assign(task, { boardId: idBoard });
-    return new Task(task);
+): Promise<ITaskResponse | null> => {
+  const result = await Board.findByPk(idBoard);
+  if (result) {
+    const tasks = await result.createTask({ ...task, id: v4() });
+    return tasks;
   }
-  return false;
+  return null;
 };
 
 const getTaskByIDandBoardID = async (
   idTask: string | undefined,
   idBoard: string | undefined,
-): Promise<ITask | undefined> =>
-  Task.instances.find(task => task.id === idTask && task.boardId === idBoard);
+): Promise<ITaskResponse | null> => {
+  const result = await Task.findOne({ where: { id: idTask, boardId: idBoard } });
+  return result;
+};
 
 const UpdateTask = async (
   idTask: string | undefined,
   idBoard: string | undefined,
-  task: ITaskResponse,
-): Promise<ITaskResponse | boolean> => {
-  const TaskExist: ITask | undefined = Task.instances.find(
-    elem => elem.id === idTask && elem.boardId === idBoard,
-  );
-  if (TaskExist) {
-    const index: number = Task.instances.indexOf(TaskExist);
-    Object.assign(task, { id: idTask, boardId: idBoard });
-    Task.instances.splice(index, 1, task);
-    return task;
-  }
-  return false;
+  task: ITaskParams,
+): Promise<[number, Task[]]> => {
+  const result = await Task.update(task, { where: { id: idTask, boardId: idBoard } });
+  return result;
 };
 
 const DeleteTask = async (
   idTask: string | undefined,
   idBoard: string | undefined,
-): Promise<{ message: string } | boolean> => {
-  if (idTask === 'all') {
-    const taskAll: Array<ITask> = Task.instances.filter(task => task.boardId === idBoard);
-    taskAll.forEach(elem => {
-      const indexAll: number = Task.instances.indexOf(elem);
-      Task.instances.splice(indexAll, 1);
-    });
-    return { message: 'The tasks have been deleted' };
-  }
-
-  const TaskExist: ITask | undefined = Task.instances.find(
-    task => task.id === idTask && task.boardId === idBoard,
-  );
-  if (TaskExist) {
-    const index: number = Task.instances.indexOf(TaskExist);
-    Task.instances.splice(index, 1);
-    return { message: 'The task has been deleted' };
-  }
-  return false;
+): Promise<number> => {
+  const result = await Task.destroy({ where: { id: idTask, boardId: idBoard } });
+  return result;
 };
 
-const setUserIdNull = async (idUser: string | undefined): Promise<void> => {
-  const taskNull: Array<ITask> = Task.instances.filter(task => task.userId === idUser);
-  taskNull.forEach(elem => {
-    const index: number = Task.instances.indexOf(elem);
-    const newelem: ITask & { userId: null } = Object.assign(elem, { userId: null });
-    Task.instances.splice(index, 1, newelem);
-  });
-};
-export {
-  getAllTaskByBOARDID,
-  CreatTask,
-  getTaskByIDandBoardID,
-  UpdateTask,
-  DeleteTask,
-  setUserIdNull,
-};
+export { getAllTaskByBOARDID, CreatTask, getTaskByIDandBoardID, UpdateTask, DeleteTask };

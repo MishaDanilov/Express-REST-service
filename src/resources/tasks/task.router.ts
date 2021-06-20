@@ -1,7 +1,8 @@
 import express from 'express';
 import * as tasksService from './task.service';
-import { ITask, ITaskParams, ITaskResponse } from './task.model';
+import { Task, ITaskParams, ITaskResponse } from './task.model';
 import { errorCatch } from '../../common/errorCatch';
+import { ErrorWithStatus } from '../../middlewares/errorHandling';
 
 const router = express.Router({ mergeParams: true });
 
@@ -11,7 +12,7 @@ router
     errorCatch(
       async (req, res): Promise<void> => {
         const id: string | undefined = req.params['boardId'];
-        const tasks: Array<ITask> = await tasksService.getAllTaskByBOARDID(id);
+        const tasks: Array<ITaskResponse> | null = await tasksService.getAllTaskByBOARDID(id);
         res.status(200).json(tasks);
       },
     ),
@@ -21,7 +22,7 @@ router
       async (req, res): Promise<void> => {
         const idBoard: string | undefined = req.params['boardId'];
         const task: ITaskParams = req.body;
-        const createdTask: boolean | ITask = await tasksService.CreatTask(idBoard, task);
+        const createdTask: ITaskResponse | null = await tasksService.CreatTask(idBoard, task);
         if (!createdTask) res.status(201).json({});
         else res.status(201).json(createdTask);
       },
@@ -34,8 +35,11 @@ router
       async (req, res): Promise<void> => {
         const idBoard: string | undefined = req.params['boardId'];
         const idTask: string | undefined = req.params['taskId'];
-        const task: ITask | undefined = await tasksService.getTaskByIDandBoardID(idTask, idBoard);
-        if (!task) res.status(404).end();
+        const task: ITaskResponse | null = await tasksService.getTaskByIDandBoardID(
+          idTask,
+          idBoard,
+        );
+        if (!task) throw new ErrorWithStatus(404, 'Task not found');
         else res.status(200).json(task);
       },
     ),
@@ -46,13 +50,9 @@ router
         const task: ITaskResponse = req.body;
         const idBoard: string | undefined = req.params['boardId'];
         const idTask: string | undefined = req.params['taskId'];
-        const UpdatedTask: boolean | ITaskResponse = await tasksService.UpdateTask(
-          idTask,
-          idBoard,
-          task,
-        );
-        if (!UpdatedTask) res.status(404).end();
-        else res.status(200).json(UpdatedTask);
+        const UpdatedTask: [number, Task[]] = await tasksService.UpdateTask(idTask, idBoard, task);
+        if (!UpdatedTask) throw new ErrorWithStatus(404, 'Task not found');
+        else res.status(200).json({ status: true, message: 'Задача обновлена.' });
       },
     ),
   )
@@ -61,12 +61,9 @@ router
       async (req, res): Promise<void> => {
         const idBoard: string | undefined = req.params['boardId'];
         const idTask: string | undefined = req.params['taskId'];
-        const result: boolean | { message: string } = await tasksService.DeleteTask(
-          idTask,
-          idBoard,
-        );
-        if (!result) res.status(404).end();
-        else res.status(204).json(result);
+        const result: number = await tasksService.DeleteTask(idTask, idBoard);
+        if (!result) throw new ErrorWithStatus(404, 'Task not found');
+        else res.status(204).json({ status: true, message: 'Задача удалена.' });
       },
     ),
   );

@@ -1,7 +1,8 @@
 import express from 'express';
-import { IBoard, IBoardParams, IBoardResponse } from './board.model';
+import { IBoard, IBoardParams, Board, IBoardParamsForUpdate } from './board.model';
 import * as boardsService from './board.service';
 import { errorCatch } from '../../common/errorCatch';
+import { ErrorWithStatus } from '../../middlewares/errorHandling';
 
 const router = express.Router();
 
@@ -30,8 +31,8 @@ router
     errorCatch(
       async (req, res): Promise<void> => {
         const { id } = req.params;
-        const board: IBoard | undefined = await boardsService.getBoardByID(id);
-        if (!board) res.status(404).end();
+        const board: IBoard | null = await boardsService.getBoardByID(id);
+        if (!board) throw new ErrorWithStatus(404, 'Board not found');
         else res.status(200).json(board);
       },
     ),
@@ -39,11 +40,11 @@ router
   .put(
     errorCatch(
       async (req, res): Promise<void> => {
-        const board: IBoardResponse = req.body;
+        const board: IBoardParamsForUpdate = req.body;
         const { id } = req.params;
-        const UpdatedBoard: boolean | IBoardResponse = await boardsService.UpdateBoard(id, board);
-        if (!UpdatedBoard) res.status(404).end();
-        else res.status(200).json(UpdatedBoard);
+        const UpdatedBoard: [number, Board[]] = await boardsService.UpdateBoard(id, board);
+        if (!UpdatedBoard[0]) throw new ErrorWithStatus(404, 'Board not found');
+        else res.status(200).json({ status: true, message: 'Доска обновлена.' });
       },
     ),
   )
@@ -51,9 +52,9 @@ router
     errorCatch(
       async (req, res): Promise<void> => {
         const { id } = req.params;
-        const result: boolean | { message: string } = await boardsService.DeleteBoard(id);
-        if (!result) res.status(404).end();
-        else res.status(204).json(result);
+        const result: number = await boardsService.DeleteBoard(id);
+        if (!result) throw new ErrorWithStatus(404, 'Board not found');
+        else res.status(200).json({ status: true, message: 'Доска удалена.' });
       },
     ),
   );

@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import fs from 'fs';
-import path from 'path';
+import { loggingError } from '../common/logger';
 
 class ErrorWithStatus extends Error {
   status: number;
 
-  constructor(status: number) {
-    super();
+  constructor(status: number, message: string) {
+    super(message);
     this.status = status;
   }
 }
@@ -17,9 +16,8 @@ const errorHandling = (err: ErrorWithStatus, _req: Request, res: Response, _next
     name: err.name,
     message: err.message,
   };
-  fs.appendFileSync(path.join(__dirname, '../../errors.txt'), JSON.stringify(data));
-  fs.appendFileSync(path.join(__dirname, '../../errors.txt'), '\n');
-  res.status(500).json(data);
+  loggingError<string>(JSON.stringify(data));
+  res.status(err.status || 500).json(data);
 };
 
 const uncaughtException = (err: ErrorWithStatus) => {
@@ -28,8 +26,7 @@ const uncaughtException = (err: ErrorWithStatus) => {
     name: err.name,
     message: err.message,
   };
-  fs.appendFileSync(path.join(__dirname, '../../errors.txt'), JSON.stringify(data));
-  fs.appendFileSync(path.join(__dirname, '../../errors.txt'), '\n');
+  loggingError<string>(JSON.stringify(data));
 };
 
 const unhandledRejection = (reason: string, promise: Promise<ErrorWithStatus>) => {
@@ -40,11 +37,11 @@ const unhandledRejection = (reason: string, promise: Promise<ErrorWithStatus>) =
       reason,
       message: err.message,
     };
-    fs.appendFileSync(path.join(__dirname, '../../errors.txt'), JSON.stringify(data));
-    fs.appendFileSync(path.join(__dirname, '../../errors.txt'), '\n');
+    loggingError<string>(JSON.stringify(data));
   });
 };
 export {
+  ErrorWithStatus,
   errorHandling,
   uncaughtException as uncaughtExceptionMiddlewares,
   unhandledRejection as unhandledRejectionMiddlewares,

@@ -25,8 +25,7 @@ PORT=4000
 AUTH_MODE=false
 JWT_SECRET_KEY=secret-key
 
-PSQL_HOST: database
-POSTGRES_HOST=localhost
+POSTGRES_HOST=postgres
 POSTGRES_PORT=<your postgres port>
 POSTGRES_DB=<your postgres db>
 POSTGRES_USER=<your postgres user name>

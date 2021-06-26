@@ -7,14 +7,13 @@ import { userRouter } from './resources/users/user.router';
 import { boardRouter } from './resources/boards/board.router';
 import { taskRouter } from './resources/tasks/task.router';
 import { logging } from './middlewares/logging';
-import { sequelize as db } from './db/db';
+import './resources/relationships';
+
 import {
   errorHandling,
   uncaughtExceptionMiddlewares,
   unhandledRejectionMiddlewares,
 } from './middlewares/errorHandling';
-
-db.sync().catch(err => console.log('Error: ', err.message));
 
 const app = express();
 
@@ -28,7 +27,7 @@ app.use('/doc', swaggerUI.serve, swaggerUI.setup(swaggerDocument));
 
 app.use('/', (req, res, next): void => {
   if (req.originalUrl === '/') {
-    res.send('Service is running!');
+    res.send('Service is running!!');
     return;
   }
   next();

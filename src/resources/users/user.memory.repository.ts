@@ -1,4 +1,5 @@
 import { v4 } from 'uuid';
+import bcrypt from 'bcrypt';
 import { User, IUserParams, IUserResponse } from './user.model';
 
 const getAll = async (): Promise<Array<User>> => {
@@ -6,8 +7,24 @@ const getAll = async (): Promise<Array<User>> => {
   return users;
 };
 
+const getUserByLogin = async (login: string | undefined): Promise<User | null> => {
+  const user = await User.findOne({ where: { login } });
+  return user;
+};
+
+const getUserByLoginAndId = async (
+  login: string | undefined,
+  id: string | undefined,
+): Promise<User | null> => {
+  const user = await User.findOne({ where: { login, id } });
+  return user;
+};
+
 const CreatUser = async (param: IUserParams): Promise<IUserResponse> => {
   const createUser = { id: v4(), ...param };
+  const salt = await bcrypt.genSalt(10);
+  const pass = await bcrypt.hash(createUser.password, salt);
+  createUser.password = pass;
   const result = await User.create({
     id: createUser.id,
     name: createUser.name,
@@ -40,4 +57,12 @@ const DeleteUser = async (id: string | undefined): Promise<number> => {
   const result = await User.destroy({ where: { id } });
   return result;
 };
-export { getAll, CreatUser, getUserByID, UpdateUser, DeleteUser };
+export {
+  getAll,
+  CreatUser,
+  getUserByID,
+  UpdateUser,
+  DeleteUser,
+  getUserByLogin,
+  getUserByLoginAndId,
+};

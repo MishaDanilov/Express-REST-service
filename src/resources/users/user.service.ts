@@ -7,6 +7,14 @@ const CreatUser = (user: IUserParams): Promise<IUserResponse> => usersRepo.Creat
 
 const getUserByID = (id: string | undefined): Promise<User | null> => usersRepo.getUserByID(id);
 
+const getUserByLogin = (login: string | undefined): Promise<User | null> =>
+  usersRepo.getUserByLogin(login);
+
+const getUserByLoginAndId = (
+  login: string | undefined,
+  id: string | undefined,
+): Promise<User | null> => usersRepo.getUserByLoginAndId(login, id);
+
 const UpdateUser = (id: string | undefined, user: IUserResponse): Promise<[number, User[]]> =>
   usersRepo.UpdateUser(id, user);
 
@@ -14,4 +22,12 @@ const DeleteUser = (id: string | undefined): Promise<number> => {
   return usersRepo.DeleteUser(id);
 };
 
-export { getAll, CreatUser, getUserByID, UpdateUser, DeleteUser };
+export {
+  getAll,
+  CreatUser,
+  getUserByID,
+  UpdateUser,
+  DeleteUser,
+  getUserByLogin,
+  getUserByLoginAndId,
+};

@@ -7,6 +7,8 @@ import { userRouter } from './resources/users/user.router';
 import { boardRouter } from './resources/boards/board.router';
 import { taskRouter } from './resources/tasks/task.router';
 import { logging } from './middlewares/logging';
+import { loginRouter } from './resources/login/login.router';
+import { checkLogin } from './middlewares/checkLogin';
 import './resources/relationships';
 
 import {
@@ -33,9 +35,12 @@ app.use('/', (req, res, next): void => {
   next();
 });
 
+app.use(checkLogin);
+
 app.use('/users', userRouter);
 app.use('/boards', boardRouter);
 app.use('/boards', taskRouter);
+app.use('/login', loginRouter);
 
 process.on('uncaughtException', uncaughtExceptionMiddlewares);
 

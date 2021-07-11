@@ -1,38 +1,38 @@
 version: '3'
-services: 
-    node:
-        image: andropoulos/task6_node:node
-        build: .
-        ports:
-            - ${PORT}:${PORT}
-        depends_on:
-            - postgres
-        restart: always
-        volumes: 
-            - ./src:/usr/app/src  
-            - ./logs:/usr/app/logs
-        environment:  
-            PORT: ${PORT}
-        networks: 
-            - app-net
-    postgres:
-        image: andropoulos/task6_postgres:postgres
-        build: ./database/
-        ports: 
-            - ${POSTGRES_PORT}:${POSTGRES_PORT}
-        environment: 
-            POSTGRES_HOST: ${POSTGRES_HOST}
-            POSTGRES_PORT: ${POSTGRES_PORT}
-            POSTGRES_USER: ${POSTGRES_USER}
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-            POSTGRES_DB: ${POSTGRES_DB}
-        volumes: 
-            - data:/var/lib/postgresql/data
-        networks:
-            - app-net
-        restart: always
+services:
+  node:
+    image: andropoulos/task6_node:node
+    build: .
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - postgres
+    restart: always
+    volumes:
+      - ./src:/usr/app/src
+      - ./logs:/usr/app/logs
+    environment:
+      PORT: ${PORT}
+    networks:
+      - app-net
+  postgres:
+    image: andropoulos/task6_postgres:postgres
+    build: ./database/
+    ports:
+      - ${POSTGRES_PORT}:${POSTGRES_PORT}
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - data:/var/lib/postgresql/data
+    networks:
+      - app-net
+    restart: always
 networks:
-    app-net:
-        driver: bridge
-volumes: 
-    data:
+  app-net:
+    driver: bridge
+volumes:
+  data:

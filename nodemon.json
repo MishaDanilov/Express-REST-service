@@ -1,7 +1,0 @@
-{
-    "ignore": ["node_modules"],
-    "watch": ["./src"],
-    "legacyWatch": true,
-    "ext": ".ts",
-    "delay": "2500"
-  }
